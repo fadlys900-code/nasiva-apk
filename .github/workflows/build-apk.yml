@@ -1,0 +1,35 @@
+name: Build Nasiva Storage Android APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.4'
+
+      - name: Build Debug APK (Siap Install)
+        run: gradle assembleDebug --no-daemon
+
+      - name: Upload File APK Siap Install
+        uses: actions/upload-artifact@v4
+        with:
+          name: NasivaStorage-Realtime-v21-APK
+          path: app/build/outputs/apk/debug/*.apk
